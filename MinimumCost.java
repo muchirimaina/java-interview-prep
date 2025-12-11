@@ -1,74 +1,76 @@
 import java.util.*;
 
-class Solution{
-
-    public static int minCost(int maxTime, int[][] edges, int[] passingFees) {
+class Solution {
+    
+    public static  int minCost(int maxTime, int[][] edges, int[] passingFees) {
         int n = passingFees.length;
-        
-        // 1. Build the adjacency list representation of the graph
-        // Map<City A, List<[City B, Travel Time]>>
-        Map<Integer, List<int[]>> adj = new HashMap<>();
-        for (int[] edge : edges) {
-            int u = edge[0];
-            int v = edge[1];
+
+        // 1. Build the undirected Graph representing cities using Hashmap
+        Map<Integer, List<int[]>> citiesGraph = new HashMap<>();
+        for(int [] edge: edges){
+            int homeCity = edge[0];
+            int neighborCity = edge[1];
             int time = edge[2];
-            adj.computeIfAbsent(u, k -> new ArrayList<>()).add(new int[]{v, time});
-            adj.computeIfAbsent(v, k -> new ArrayList<>()).add(new int[]{u, time}); // Graph is undirected
+
+            citiesGraph.computeIfAbsent(homeCity, k -> new ArrayList<>()).add(new int[]{neighborCity, time});
+            citiesGraph.computeIfAbsent(neighborCity, k -> new ArrayList<>()).add(new int[]{homeCity,time});
         }
 
-        // 2. Data Structures for the algorithm
-        // Use int[] instead of a custom State record/class
-        // Each array stores: [currentTime, currentCost, nodeId]
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        // 2. Use a priority queue as the main Datastructure
+        // This pq will store [currentTime, currentCost, cityId]
+        PriorityQueue<int []> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
 
-        int[] minCostForNode = new int[n];
-        Arrays.fill(minCostForNode, Integer.MAX_VALUE);
+        int [] minCostForDestination = new int[n];
+        //Assigning the biggest integer to compare with
+        Arrays.fill(minCostForDestination, Integer.MAX_VALUE);
 
-        // 3. Start the algorithm
+        // 3. Start the algorithm/ Dijkstra's -- finding the minimumCost & time
         int startNode = 0;
-        minCostForNode[startNode] = passingFees[startNode];
-        // Add the starting state: [currentTime, currentCost, nodeId]
-        pq.add(new int[]{0, passingFees[startNode], startNode}); 
+        minCostForDestination[startNode] = passingFees[startNode];
+        // The starting State 
+        pq.add(new int []{0,passingFees[startNode],startNode});
 
-        while (!pq.isEmpty()) {
-            // Deconstruct the array pulled from the queue
-            int[] current = pq.poll();
+        while(!pq.isEmpty()){
+            // The queue has only one item at the moment | Update the values as you get the shortest paths, next array in the pq
+            int [] current = pq.poll();
             int currentTime = current[0];
             int currentCost = current[1];
-            int u = current[2]; // nodeId
-
-            // Optimization: If current time exceeds the limit or we found a cheaper way to
-            // reach this node with less time (which implies this path is suboptimal), skip.
-            if (currentTime > maxTime || currentCost > minCostForNode[u]) {
-                 continue;
-            }
+            int homeCity = current[2];
             
-            // 4. Explore neighbors
-            for (int[] edge : adj.getOrDefault(u, Collections.emptyList())) {
-                int v = edge[0];
+            //If the currentTime exceeds the limit or the cost is higher, the path is subOptimal
+            if(currentTime > maxTime || currentCost > minCostForDestination[homeCity]){
+                continue;
+            }
+
+            
+
+            // 4. Explore the neighbors
+
+            for(int[] edge : citiesGraph.getOrDefault(homeCity, Collections.emptyList())){
+                int neighborCity = edge[0];
                 int travelTime = edge[1];
                 int nextTime = currentTime + travelTime;
-                int nextCost = currentCost + passingFees[v];
+                int nextCost = currentCost + passingFees[neighborCity];
 
-                // If the path is valid (within time limits) and the new cost is better 
-                // than any previously found cost to node 'v' at a comparable time, update and add to PQ.
-                if (nextTime <= maxTime && nextCost < minCostForNode[v]) {
-                    minCostForNode[v] = nextCost;
-                    // Add the new state array to the PQ: [nextTime, nextCost, v]
-                    pq.add(new int[]{nextTime, nextCost, v});
+                // If the path is valid(within time Limit) and cost is better than any prev found cost to node "neighborCity" at a comparable time, update the pq
+                if(nextTime <= maxTime && nextCost < minCostForDestination[neighborCity]){
+                    minCostForDestination[neighborCity] = nextCost;
+                    // Add new state to the pq: [nextTime, nextCost, neighborCity]
+                    pq.add(new int []{nextTime, nextCost, neighborCity});
                 }
             }
         }
-        
-        // 5. After exploring all time-valid paths, the answer is the minimum cost 
-        // recorded for the destination node (n-1).
-        if (minCostForNode[n - 1] == Integer.MAX_VALUE) {
-            return -1; // Destination is unreachable within maxTime
-        } else {
-            return minCostForNode[n - 1];
-        }
+
+        // 5. Return the minimum cost after the algorithmn if no path found return -1 since minimun will still be the MaxValue
+
+        if(minCostForDestination[n-1] == Integer.MAX_VALUE){
+            return -1;
+        }else{
+            return minCostForDestination[n-1];
+        }  
     }
 
+    
     public static void main (String[] args){
         int maxTime = 30;
         int[][] edges = {{0,1,10},{1,2,10},{2,5,10},{0,3,1},{3,4,10},{4,5,15}};
@@ -78,3 +80,5 @@ class Solution{
 
     }
 }
+
+
