@@ -1,7 +1,7 @@
 import java.util.*;
 
-class Solution {
-    
+class SolutionDjistra{
+
     public static  int minCost(int maxTime, int[][] edges, int[] passingFees) {
         int n = passingFees.length;
 
