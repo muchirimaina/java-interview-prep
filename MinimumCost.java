@@ -20,13 +20,15 @@ class SolutionDjistra{
         // This pq will store [currentTime, currentCost, cityId]
         PriorityQueue<int []> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
 
-        int [] minCostForDestination = new int[n];
+       
         //Assigning the biggest integer to compare with
-        Arrays.fill(minCostForDestination, Integer.MAX_VALUE);
+        int [][] best = new int [n][maxTime +1];
+        for(int i = 0; i<n; i++){
+            Arrays.fill(best[i], Integer.MAX_VALUE);
+        }
 
         // 3. Start the algorithm/ Dijkstra's -- finding the minimumCost & time
         int startNode = 0;
-        minCostForDestination[startNode] = passingFees[startNode];
         // The starting State 
         pq.add(new int []{0,passingFees[startNode],startNode});
 
@@ -37,10 +39,14 @@ class SolutionDjistra{
             int currentCost = current[1];
             int homeCity = current[2];
             
-            //If the currentTime exceeds the limit or the cost is higher, the path is subOptimal
-            if(currentTime > maxTime || currentCost > minCostForDestination[homeCity]){
+            //If the currentTime exceeds the time limit or the best cost - the path is subOptimal
+            if(currentTime > maxTime || currentCost > best[homeCity][currentTime]){
                 continue;
             }
+
+            // if (currentCost > best[homeCity][currentTime]) {
+            //         continue;  // Skip exploring neighbors from this state
+            //     }
 
             
 
@@ -53,8 +59,8 @@ class SolutionDjistra{
                 int nextCost = currentCost + passingFees[neighborCity];
 
                 // If the path is valid(within time Limit) and cost is better than any prev found cost to node "neighborCity" at a comparable time, update the pq
-                if(nextTime <= maxTime && nextCost < minCostForDestination[neighborCity]){
-                    minCostForDestination[neighborCity] = nextCost;
+                if(nextTime <= maxTime && nextCost < best[neighborCity][nextTime]){
+                    best[neighborCity][nextTime] = nextCost;
                     // Add new state to the pq: [nextTime, nextCost, neighborCity]
                     pq.add(new int []{nextTime, nextCost, neighborCity});
                 }
@@ -63,20 +69,28 @@ class SolutionDjistra{
 
         // 5. Return the minimum cost after the algorithmn if no path found return -1 since minimun will still be the MaxValue
 
-        if(minCostForDestination[n-1] == Integer.MAX_VALUE){
-            return -1;
-        }else{
-            return minCostForDestination[n-1];
-        }  
+        int ans = Integer.MAX_VALUE;
+        for(int t = 0; t <= maxTime; t++){
+            ans = Math.min(ans, best[n-1][t]);
+        }
+
+        return ans == Integer.MAX_VALUE? -1 : ans;
     }
 
     
-    public static void main (String[] args){
-        int maxTime = 30;
-        int[][] edges = {{0,1,10},{1,2,10},{2,5,10},{0,3,1},{3,4,10},{4,5,15}};
-        int[] passingFees = {5,1,2,20,20,3};
+        public static void main (String[] args){
+            int maxTime = 10;
+            int[][] edges = {
+        {0, 1, 2},
+        {0, 2, 1},
+        {0, 3, 10},
+        {1, 3, 2},
+        {3, 2, 2},
+        {4, 3, 1}
+    };
+            int[] passingFees = {1,1,3,2,1};
 
-        System.out.println(minCost(maxTime,edges,passingFees));
+            System.out.println(minCost(maxTime,edges,passingFees));
 
     }
 }
