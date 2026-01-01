@@ -1,0 +1,20 @@
+public class Solution {
+    public int lengthOfLastWord(String s) {
+        // Remove spaces and Split into an array
+        String [] arrWords = s.trim().split("\\s+");
+
+        // Return last word
+        String lastWord =  arrWords[arrWords.length-1];
+
+        int count = lastWord.length();
+
+        return count;  
+    }
+
+
+    public static void main(String [] args){
+        String s = "   The quick    brown fox    ";
+
+        System.out.println(lengthOfLastWord(s));
+    }
+}

@@ -44,10 +44,7 @@ class SolutionDjistra{
                 continue;
             }
 
-            // if (currentCost > best[homeCity][currentTime]) {
-            //         continue;  // Skip exploring neighbors from this state
-            //     }
-
+        
             
 
             // 4. Explore the neighbors
