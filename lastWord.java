@@ -1,14 +1,17 @@
 public class LastWord {
     public static int lengthOfLastWord(String s) {
-        // Remove spaces and Split into an array
-        String [] arrWords = s.trim().split("\\s+");
+        int length = 0;
+        boolean counting = false;
 
-        // Return last word
-        String lastWord =  arrWords[arrWords.length-1];
-
-        int count = lastWord.length();
-
-        return count;  
+        for(int i = s.length()-1; i >=0; i--){
+            if(s.charAt(i) != ' '){
+                counting = true;
+                length++;
+            }else if(counting){
+                break;
+            }
+        }
+        return length;    
     }
 
 
