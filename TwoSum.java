@@ -16,7 +16,7 @@ public class TwoSum{
     }
 
     public static void main(String [] args){
-        int [] nums = {1,2,3};
+        int [] nums = {2,2,3};
         int target = 4;
 
         System.out.println(Arrays.toString(twoSum(nums,target))); 
