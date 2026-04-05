@@ -15,6 +15,7 @@ public class Graph{
     }
     
     
+    // For undirected graphs, you have to add for both vertices, If Directed, You'll only add once
     
     public void addEdge(int u, int v){
         adjList.get(u).add(v);
