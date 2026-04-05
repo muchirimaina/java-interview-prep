@@ -5,7 +5,7 @@ public class Stack{
         StackNode next;
         
         StackNode(int val){
-            this.val = val;
+            this.val = val;                          
             this.next = null;
         }
     }
