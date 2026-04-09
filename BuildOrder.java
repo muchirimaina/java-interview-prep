@@ -1,6 +1,6 @@
 import java.util.*;
 
-class BuildOrder {
+public class BuildOrder {
 
     public static List<Character> topoSort(Map<Character, List<Character>> adj) {
         
