@@ -1,3 +1,5 @@
+
+
 public static void drawLine(byte[] screen, int width, int x1, int x2, int y) {
     int bytesPerRow = width / 8;
     int rowOffset = y * bytesPerRow;
